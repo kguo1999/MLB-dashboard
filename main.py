@@ -14,16 +14,25 @@ teams_abb = ['LAD', 'LAA', 'SDP', 'SEA', 'SFG', 'TBR',
              'BOS', 'OAK', 'CHC', 'COL', 'CHW', 'WSN']
 
 # define dictionary which maps the abbreviation to the team name\
-abb_to_name = {'LAD': 'Los Angeles Dodgers', 'LAA': 'Los Angeles Angels', 'SDP': 'San Diego Padres', 'SEA': 'Seattle Mariners', 'TBR': 'Tampa Bay Rays',
-               'DET': 'Detroit Tigers', 'KCR': 'Kansas City Royals', 'CLE': 'Cleveland Guardians', 'MIL': 'Milwaukee Brewers', 'NYY': 'New York Yankees', 'HOU': 'Houston Astros',
-               'ARI': 'Arizona Diamondbacks', 'STL': 'St Louis Cardinals', 'BAL': 'Baltimore Orioles', 'MIA': 'Miami Marlins', 'MIN': 'Minesotta Twins', 'PIT': 'Pittsburgh Pirates',
-               'ATL': 'Atlanta Braves', 'CIN': 'Cincinnati Reds', 'TEX': 'Texas Rangers', 'TOR': 'Toronto Blue Jays', 'NYM': 'New York Mets', 'PHI': 'Philadelphia Phillies',
-               'BOS': 'Boston Red Sox', 'OAK': 'Oakland Athletics', 'CHC': 'Chicago Cubs', 'COL': 'Colorado Rockies', 'CHW': 'Chicago White Sox', 'WSN': 'Washington Nationals'}
+name_to_abb = {'Los Angeles Dodgers': 'LAD', 'Los Angeles Angels': 'LAA', 'San Diego Padres': 'SDP', 'Seattle Mariners': 'SEA', 'Tampa Bay Rays': 'TBR',
+               'Detroit Tigers': 'DET', 'Kansas City Royals': 'KCR', 'Cleveland Guardians': 'CLE', 'Milwaukee Brewers': 'MIL', 'New York Yankees': 'NYY', 'Houston Astros': 'HOU',
+               'Arizona Diamondbacks': 'ARI', 'St Louis Cardinals': 'STL', 'Baltimore Orioles': 'BAL', 'Miami Marlins': 'MIA', 'Minesotta Twins': 'MIN', 'Pittsburgh Pirates': 'PIT',
+               'Atlanta Braves': 'ATL', 'Cincinnati Reds': 'CIN', 'Texas Rangers': 'TEX', 'Toronto Blue Jays': 'TOR', 'New York Mets': 'NYM', 'Philadelphia Phillies': 'PHI',
+               'Boston Red Sox': 'BOS', 'Oakland Athletics': 'OAK', 'Chicago Cubs': 'CHC', 'Colorado Rockies': 'COL', 'Chicago White Sox': 'CHW', 'Washington Nationals': 'WSN'}
 
 st.title('MLB Teams')
 
 # st.write("Please select one of the following teams:")
-team_selection = st.selectbox('Please select one of the MLB Teams', options = list(abb_to_name.values()))
+team_selection = st.selectbox('Please select one of the MLB Teams', options = list(name_to_abb.keys()), 
+                              index = None, placeholder = 'Select MLB team')
 
-team = statsapi.lookup_team(team_selection)
-st.write('You selected: ', team_selection)
+if team_selection: 
+    st.write('You selected: ', team_selection)
+
+    team = statsapi.lookup_team(name_to_abb[team_selection])[0]
+    roster = statsapi.roster(team['id'])
+    roster_df = pd.DataFrame(roster.split('\n')).rename(columns = {0: 'Number'})
+    roster_df['Number'] = roster_df['Number'].str.replace(' +', ' ', regex = True).str.replace(' ', '-', n = 2)
+    roster_df[['Number', 'Position', 'Name']] = roster_df['Number'].str.split('-', expand = True)
+
+    st.dataframe(roster_df, hide_index = True)
