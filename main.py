@@ -6,12 +6,12 @@ import pandas as pd
 import streamlit as st
 import statsapi
 
-# define team abbreviations for lookup reference
-teams_abb = ['LAD', 'LAA', 'SDP', 'SEA', 'SFG', 'TBR', 
-             'DET', 'KCR', 'CLE', 'MIL', 'NYY', 'HOU', 
-             'ARI', 'STL', 'BAL', 'MIA', 'MIN', 'PIT', 
-             'ATL', 'CIN', 'TEX', 'TOR', 'NYM', 'PHI',
-             'BOS', 'OAK', 'CHC', 'COL', 'CHW', 'WSN']
+# # define team abbreviations for lookup reference
+# teams_abb = ['LAD', 'LAA', 'SDP', 'SEA', 'SFG', 'TBR', 
+#              'DET', 'KCR', 'CLE', 'MIL', 'NYY', 'HOU', 
+#              'ARI', 'STL', 'BAL', 'MIA', 'MIN', 'PIT', 
+#              'ATL', 'CIN', 'TEX', 'TOR', 'NYM', 'PHI',
+#              'BOS', 'OAK', 'CHC', 'COL', 'CHW', 'WSN']
 
 # define dictionary which maps the abbreviation to the team name\
 name_to_abb = {'Los Angeles Dodgers': 'LAD', 'Los Angeles Angels': 'LAA', 'San Diego Padres': 'SDP', 'Seattle Mariners': 'SEA', 'Tampa Bay Rays': 'TBR',
@@ -29,10 +29,10 @@ team_selection = st.selectbox('Please select one of the MLB Teams', options = li
 if team_selection: 
     st.write('You selected: ', team_selection)
 
-    team = statsapi.lookup_team(name_to_abb[team_selection])[0]
+    team = statsapi.lookup_team(team_selection)[0]
     roster = statsapi.roster(team['id'])
     roster_df = pd.DataFrame(roster.split('\n')).rename(columns = {0: 'Number'})
     roster_df['Number'] = roster_df['Number'].str.replace(' +', ' ', regex = True).str.replace(' ', '-', n = 2)
-    roster_df[['Number', 'Position', 'Name']] = roster_df['Number'].str.split('-', expand = True)
+    roster_df[['Number', 'Position', 'Name']] = roster_df['Number'].str.split('-', expand = True, n = 2)
 
     st.dataframe(roster_df, hide_index = True)
