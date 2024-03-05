@@ -1,6 +1,7 @@
 import statsapi
 import json
 import numpy as np
+import pandas as pd
 from pathlib import Path
 
 def generate_multiple_standings_json(year_range = []):
@@ -26,13 +27,19 @@ def generate_multiple_standings_json(year_range = []):
 
 def get_team_pct(team_id):
     """
-    Takes in unique teamID and outputs list of the winning percentages (pct) for defined years
+    Takes in unique teamID and outputs dataframe of the winning percentages (pct) for defined years
     TODO: Allow user to select which year range to take in - currently only static 2021-2023 for testing
     """
 
+    # read json file
     with open('Data/20212023.json', 'r') as json_input:
         standings = json.load(json_input)
 
-    team_pct = list(filter(lambda team: team['team']['id'] == team_id, standings))
-
-    return team_pct
+    # filter for specific team 
+    team = list(filter(lambda team: team['team']['id'] == team_id, standings))
+    
+    # obtain year and winning pct as dataframe
+    team_pct = [{'year': x['season'], 'pct': x['leagueRecord']['pct']} for x in team]
+    team_pct = pd.DataFrame(team_pct)
+    
+    return pd.DataFrame(team_pct)

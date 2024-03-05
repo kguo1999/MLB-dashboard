@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import statsapi
+import functions
 
 # # define team abbreviations for lookup reference
 # teams_abb = ['LAD', 'LAA', 'SDP', 'SEA', 'SFG', 'TBR', 
@@ -36,3 +37,6 @@ if team_selection:
     roster_df[['Number', 'Position', 'Name']] = roster_df['Number'].str.split('-', expand = True, n = 2)
 
     st.dataframe(roster_df, hide_index = True)
+
+    team_pct = functions.get_team_pct(team['id'])
+    st.line_chart(team_pct, y = 'pct', x = 'year', height = 450)
