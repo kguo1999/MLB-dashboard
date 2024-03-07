@@ -1,5 +1,5 @@
 """
-Main app which runs the streamlit dashboard
+Page on streamlit which focuses on team performance, rosters, etc.
 """
 import numpy as np
 import pandas as pd
@@ -21,7 +21,10 @@ name_to_abb = {'Los Angeles Dodgers': 'LAD', 'Los Angeles Angels': 'LAA', 'San D
                'Atlanta Braves': 'ATL', 'Cincinnati Reds': 'CIN', 'Texas Rangers': 'TEX', 'Toronto Blue Jays': 'TOR', 'New York Mets': 'NYM', 'Philadelphia Phillies': 'PHI',
                'Boston Red Sox': 'BOS', 'Oakland Athletics': 'OAK', 'Chicago Cubs': 'CHC', 'Colorado Rockies': 'COL', 'Chicago White Sox': 'CHW', 'Washington Nationals': 'WSN'}
 
-st.title('MLB Teams')
+st.set_page_config(
+    page_title = "MLB Teams"
+)
+# st.title('MLB Teams')
 
 # st.write("Please select one of the following teams:")
 team_selection = st.selectbox('Please select one of the MLB Teams', options = list(name_to_abb.keys()), 
