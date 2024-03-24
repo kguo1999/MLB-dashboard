@@ -13,3 +13,6 @@ st.set_page_config(
 )
 
 st.title('Major League Baseball (MLB)')
+
+standings = functions.get_season_standings(2023)
+st.dataframe(standings, hide_index = True)

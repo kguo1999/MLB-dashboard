@@ -24,7 +24,8 @@ name_to_abb = {'Los Angeles Dodgers': 'LAD', 'Los Angeles Angels': 'LAA', 'San D
 st.set_page_config(
     page_title = "MLB Teams"
 )
-# st.title('MLB Teams')
+
+st.title('MLB Teams')
 
 # st.write("Please select one of the following teams:")
 team_selection = st.selectbox('Please select one of the MLB Teams', options = list(name_to_abb.keys()), 

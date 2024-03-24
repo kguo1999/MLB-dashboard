@@ -43,3 +43,24 @@ def get_team_pct(team_id):
     team_pct = pd.DataFrame(team_pct)
     
     return pd.DataFrame(team_pct)
+
+def get_season_standings(seasonNum = None):
+    """
+    Takes the season as input and gets the final MLB standings for all teams
+    If season input is left blank, assumes CURRENT season with CURRENT standings if not yet complete
+    """
+
+    # get standings raw data
+    standings_raw = statsapi.standings_data(leagueId = '103, 104', division = "all", season = seasonNum)
+
+    # convert raw data into dataframe
+    div_standings = [standings_raw[x] for x in standings_raw.keys()]
+    standings = [team for item in div_standings for team in item['teams']]
+    standings = pd.DataFrame(standings)
+
+    # filter for columns we're interested in and sort by wins
+    standings = standings[['name', 'w', 'l']].rename(columns = {'name':'Team Name', 'w': 'Wins', 'l': 'Losses'})
+    standings['Win pct'] = standings['Wins'] / (standings['Wins'] + standings['Losses'])
+    standings = standings.sort_values(by = 'Wins', ascending = False)
+
+    return standings
